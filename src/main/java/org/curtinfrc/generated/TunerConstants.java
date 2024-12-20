@@ -1,4 +1,4 @@
-package frc.robot.generated;
+package org.curtinfrc.generated;
 
 import static edu.wpi.first.units.Units.*;
 

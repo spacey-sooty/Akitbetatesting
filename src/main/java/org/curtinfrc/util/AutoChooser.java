@@ -1,4 +1,4 @@
-package frc.robot.util;
+package org.curtinfrc.util;
 
 import choreo.auto.AutoFactory;
 import edu.wpi.first.networktables.NetworkTable;

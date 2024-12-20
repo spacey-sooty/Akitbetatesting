@@ -1,7 +1,7 @@
-package frc.robot.subsystems.drive;
+package org.curtinfrc.subsystems.drive;
 
 import com.ctre.phoenix6.CANBus;
-import frc.robot.generated.TunerConstants;
+import org.curtinfrc.generated.TunerConstants;
 
 public final class DriveConstants {
   public static final double DEADBAND = 0;
