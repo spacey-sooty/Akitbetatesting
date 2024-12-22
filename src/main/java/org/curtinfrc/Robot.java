@@ -13,6 +13,8 @@
 
 package org.curtinfrc;
 
+import static org.curtinfrc.subsystems.vision.apriltag.AprilTagVisionConstants.*;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Threads;
@@ -28,6 +30,10 @@ import org.curtinfrc.subsystems.drive.GyroIOPigeon2;
 import org.curtinfrc.subsystems.drive.ModuleIO;
 import org.curtinfrc.subsystems.drive.ModuleIOSim;
 import org.curtinfrc.subsystems.drive.ModuleIOTalonFX;
+import org.curtinfrc.subsystems.vision.apriltag.AprilTagVision;
+import org.curtinfrc.subsystems.vision.apriltag.AprilTagVisionIO;
+import org.curtinfrc.subsystems.vision.apriltag.AprilTagVisionIOLimelight;
+import org.curtinfrc.subsystems.vision.apriltag.AprilTagVisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -46,6 +52,7 @@ import org.littletonrobotics.urcl.URCL;
 public class Robot extends LoggedRobot {
   // Subsystems
   private final Drive drive;
+  private final AprilTagVision vision;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -109,6 +116,11 @@ public class Robot extends LoggedRobot {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
+        vision =
+            new AprilTagVision(
+                drive::addVisionMeasurement,
+                new AprilTagVisionIOLimelight(camera0Name, drive::getRotation),
+                new AprilTagVisionIOLimelight(camera1Name, drive::getRotation));
         break;
 
       case SIM:
@@ -120,6 +132,11 @@ public class Robot extends LoggedRobot {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+        vision =
+            new AprilTagVision(
+                drive::addVisionMeasurement,
+                new AprilTagVisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                new AprilTagVisionIOPhotonVisionSim(camera1Name, robotToCamera0, drive::getPose));
         break;
 
       default:
@@ -131,6 +148,9 @@ public class Robot extends LoggedRobot {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        vision =
+            new AprilTagVision(
+                drive::addVisionMeasurement, new AprilTagVisionIO() {}, new AprilTagVisionIO() {});
         break;
     }
 
