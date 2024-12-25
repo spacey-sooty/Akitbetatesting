@@ -11,18 +11,18 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package org.curtinfrc.subsystems.vision.apriltag;
+package org.curtinfrc.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface AprilTagVisionIO {
+public interface VisionIO {
   @AutoLog
-  public static class AprilTagVisionIOInputs {
+  public static class VisionIOInputs {
     public boolean connected = false;
     public TargetObservation latestTargetObservation =
-        new TargetObservation(new Rotation2d(), new Rotation2d());
+        new TargetObservation(Rotation2d.kZero, Rotation2d.kZero);
     public PoseObservation[] poseObservations = new PoseObservation[0];
     public int[] tagIds = new int[0];
   }
@@ -45,5 +45,5 @@ public interface AprilTagVisionIO {
     PHOTONVISION
   }
 
-  public default void updateInputs(AprilTagVisionIOInputs inputs) {}
+  public default void updateInputs(VisionIOInputs inputs) {}
 }

@@ -11,9 +11,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package org.curtinfrc.subsystems.vision.apriltag;
+package org.curtinfrc.subsystems.vision;
 
-import static org.curtinfrc.subsystems.vision.apriltag.AprilTagVisionConstants.*;
+import static org.curtinfrc.subsystems.vision.VisionConstants.*;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -27,23 +27,23 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.LinkedList;
 import java.util.List;
-import org.curtinfrc.subsystems.vision.apriltag.AprilTagVisionIO.PoseObservationType;
+import org.curtinfrc.subsystems.vision.VisionIO.PoseObservationType;
 import org.littletonrobotics.junction.Logger;
 
-public class AprilTagVision extends SubsystemBase {
+public class Vision extends SubsystemBase {
   private final PoseEstimateConsumer consumer;
-  private final AprilTagVisionIO[] io;
-  private final AprilTagVisionIOInputsAutoLogged[] inputs;
+  private final VisionIO[] io;
+  private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
 
-  public AprilTagVision(PoseEstimateConsumer consumer, AprilTagVisionIO... io) {
+  public Vision(PoseEstimateConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
     this.io = io;
 
     // Initialize inputs
-    this.inputs = new AprilTagVisionIOInputsAutoLogged[io.length];
+    this.inputs = new VisionIOInputsAutoLogged[io.length];
     for (int i = 0; i < inputs.length; i++) {
-      inputs[i] = new AprilTagVisionIOInputsAutoLogged();
+      inputs[i] = new VisionIOInputsAutoLogged();
     }
 
     // Initialize disconnected alerts
@@ -62,6 +62,12 @@ public class AprilTagVision extends SubsystemBase {
    */
   public Rotation2d getTargetX(int cameraIndex) {
     return inputs[cameraIndex].latestTargetObservation.tx();
+  }
+
+  public boolean hasTarget(int cameraIndex) {
+    return inputs[cameraIndex].connected
+        && inputs[cameraIndex].latestTargetObservation.tx().equals(Rotation2d.kZero)
+        && inputs[cameraIndex].latestTargetObservation.ty().equals(Rotation2d.kZero);
   }
 
   @Override
