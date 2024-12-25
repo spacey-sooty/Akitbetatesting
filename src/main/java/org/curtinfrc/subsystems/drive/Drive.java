@@ -70,7 +70,7 @@ public class Drive extends SubsystemBase {
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
-  private Rotation2d rawGyroRotation = new Rotation2d();
+  private Rotation2d rawGyroRotation = Rotation2d.kZero;
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -79,7 +79,7 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition()
       };
   private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
 
   public Drive(
       GyroIO gyroIO,
@@ -239,8 +239,8 @@ public class Drive extends SubsystemBase {
     linearMagnitude = linearMagnitude * linearMagnitude;
 
     // Return new linear velocity
-    return new Pose2d(new Translation2d(), linearDirection)
-        .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
+    return new Pose2d(Translation2d.kZero, linearDirection)
+        .transformBy(new Transform2d(linearMagnitude, 0.0, Rotation2d.kZero))
         .getTranslation();
   }
 
@@ -272,7 +272,7 @@ public class Drive extends SubsystemBase {
                   && DriverStation.getAlliance().get() == Alliance.Red;
           runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds, isFlipped ? getRotation().plus(new Rotation2d(Math.PI)) : getRotation()));
+                  speeds, isFlipped ? getRotation().plus(Rotation2d.kPi) : getRotation()));
         });
   }
 
@@ -315,7 +315,7 @@ public class Drive extends SubsystemBase {
                   && DriverStation.getAlliance().get() == Alliance.Red;
           runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds, isFlipped ? getRotation().plus(new Rotation2d(Math.PI)) : getRotation()));
+                  speeds, isFlipped ? getRotation().plus(Rotation2d.kPi) : getRotation()));
         })
         // Reset PID controller when command starts
         .beforeStarting(() -> angleController.reset(getRotation().getRadians()));
@@ -449,7 +449,7 @@ public class Drive extends SubsystemBase {
 
   private static class WheelRadiusCharacterizationState {
     double[] positions = new double[4];
-    Rotation2d lastAngle = new Rotation2d();
+    Rotation2d lastAngle = Rotation2d.kZero;
     double gyroDelta = 0.0;
   }
 
